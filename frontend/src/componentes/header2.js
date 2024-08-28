@@ -1,16 +1,38 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import '../styles/style_header2.css';
+import Swal from 'sweetalert2';
 
 const Header2 = () => {
-  const navigate = useNavigate();
-
   const handleLogout = () => {
-    // Limpiar los datos de sesión
-    sessionStorage.clear();
-    
-    // Redirigir al inicio
-    navigate('/');
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Cerrar sesión terminará tu sesión actual.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cerrar sesión',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3085d6', // Color azul para el botón de confirmación
+      cancelButtonColor: '#d33', // Color rojo para el botón de cancelar
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Aquí puedes agregar la lógica para cerrar sesión, como redirigir al usuario o limpiar el estado de autenticación
+        // Ejemplo de redirección:
+        // window.location.href = '/login';
+        // O ejemplo de llamada a una función de cierre de sesión:
+        // logoutUser();
+  
+        Swal.fire({
+          title: '¡Sesión cerrada!',
+          text: 'Has cerrado sesión con éxito.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#3085d6', // Color azul para el botón de confirmación
+        }).then(() => {
+          // Realiza una acción después de mostrar la alerta, como redirigir a la página de inicio de sesión
+          window.location.href = '/login'; // Redirige al usuario a la página de inicio de sesión
+        });
+      }
+    });
   };
 
   return (

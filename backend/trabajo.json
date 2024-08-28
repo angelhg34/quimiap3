@@ -1,27 +1,15 @@
 {
   "Users": [
     {
-      "id": "5a86",
-      "nombres": "Dairon Smith123",
-      "apellidos": "Chapid Moreno",
-      "telefono": "3202937619",
-      "correo_electronico": "dairon12@12",
+      "id": "fb8d",
+      "nombres": "Laura",
+      "apellidos": "Albarracin",
+      "telefono": "3244582033",
+      "correo_electronico": "laura@gmail.om",
       "tipo_doc": "cc",
       "num_doc": "1081399564",
-      "contrasena": "123",
-      "genero": "masculino",
-      "rol": "gerente"
-    },
-    {
-      "id": "c554",
-      "nombres": "31312",
-      "apellidos": "13131",
-      "telefono": "423432",
-      "correo_electronico": "312312@",
-      "tipo_doc": "cc",
-      "num_doc": "31231",
-      "contrasena": "fdfsd",
-      "genero": "masculino",
+      "contrasena": "Lau1014198965",
+      "genero": "femenino",
       "rol": "jf_produccion"
     }
   ],
@@ -29,103 +17,14 @@
     {
       "id": "1",
       "imagen": "",
-      "nombre": "Detergente 2L",
+      "nombre": "detergente coco",
       "descripcion": "Detergente en polvo para ropa",
       "categoria": "Limpieza",
-      "composicion": "Sulfonato de alquilbenceno",
+      "composicion": "pe",
       "contenido_neto": "1L",
       "usos": "Ropa",
       "advertencias": "Mantener fuera del alcance de los niños",
       "precio_unitario": "10500"
-    },
-    {
-      "id": "2",
-      "nombre": "Cera polimerica 750ml",
-      "descripcion": "Corrige daños al sellador",
-      "categoria": "Pisos",
-      "composicion": "mezcla de polimeros  y resinas acrilicas",
-      "contenido_neto": "750ml",
-      "usos": "Es una cera para el mantenimiento de los pisos",
-      "advertencias": "Evitar contacto con piel y ojos",
-      "precio_unitario": "20000"
-    },
-    {
-      "id": "3",
-      "imagen": "",
-      "nombre": "Detergente liquido",
-      "descripcion": "es especito para lavar la ropa",
-      "categoria": "lava ropa",
-      "composicion": "muchos componentes",
-      "contenido_neto": "15ml",
-      "usos": "se usa para lavar la ropa",
-      "advertencias": "no estar con niños",
-      "precio_unitario": "22000"
-    },
-    {
-      "id": "4",
-      "nombre": "Desengrasante",
-      "descripcion": "oejdjlkdwd",
-      "categoria": "odlnwdwm",
-      "composicion": "nmkenedken",
-      "contenido_neto": "nkwdndkwn",
-      "usos": "dnikncdcn",
-      "advertencias": "dsknknd",
-      "precio_unitario": "16000"
-    },
-    {
-      "id": "5",
-      "nombre": "Ambientador",
-      "descripcion": "ojkdjmwkl",
-      "categoria": "m",
-      "composicion": "km",
-      "contenido_neto": "k",
-      "usos": "knknkn",
-      "advertencias": "knkn",
-      "precio_unitario": "10500"
-    },
-    {
-      "id": "6",
-      "nombre": "lava loza",
-      "descripcion": "feffefe",
-      "categoria": "effefefe",
-      "composicion": "ffefrffe",
-      "contenido_neto": "ffefffeef",
-      "usos": "ffeefef",
-      "advertencias": "fefefefe",
-      "precio_unitario": "20000"
-    },
-    {
-      "id": "7",
-      "nombre": "hipoclorito",
-      "descripcion": "ksnksn",
-      "categoria": "knknk",
-      "composicion": "knknk",
-      "contenido_neto": "knknk",
-      "usos": "knkn",
-      "advertencias": "knkn",
-      "precio_unitario": "5500"
-    },
-    {
-      "id": "8",
-      "nombre": "Secuestrante de hierro",
-      "descripcion": "holaaaaa",
-      "categoria": "holaaaaaa",
-      "composicion": "knknkn",
-      "contenido_neto": "knkn",
-      "usos": "kknknkn",
-      "advertencias": "knknknk",
-      "precio_unitario": "18000"
-    },
-    {
-      "id": "",
-      "nombre": "",
-      "descripcion": "",
-      "categoria": "",
-      "composicion": "",
-      "contenido_neto": "",
-      "usos": "",
-      "advertencias": "",
-      "precio_unitario": ""
     }
   ]
 }

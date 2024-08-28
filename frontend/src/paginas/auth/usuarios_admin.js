@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../../styles/style_usuarios.css';
 import axios from 'axios';
 import Header2 from '../../componentes/header2';
+import Swal from 'sweetalert2';
 
 const UsuariosAdmin = () => {
   const [formData, setFormData] = useState({
@@ -27,6 +28,13 @@ const UsuariosAdmin = () => {
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Error al obtener los usuarios.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#3085d6',
+      });
     }
   };
 
@@ -46,26 +54,83 @@ const UsuariosAdmin = () => {
   const handleSaveUser = async () => {
     if (isEditing && currentUser) {
       // Modo de edición: actualiza el usuario existente
-      try {
-        await axios.put(`http://localhost:4000/Users/${currentUser.id}`, formData);
-        alert('Usuario actualizado exitosamente.');
-        window.location.href='/usuarios_admin.js';
-      } catch (error) {
-        console.error('Error updating user:', error);
-      }
+      Swal.fire({
+        title: '¿Desea continuar para guardar los cambios?',
+        icon: 'warning',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Guardar',
+        denyButtonText: `No Guardar`,
+        cancelButtonText: 'Cancelar', // Cambia el texto del botón de cancelar
+        confirmButtonColor: '#3085d6', // Establece el color azul para el botón de guardar
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            await axios.put(`http://localhost:4000/Users/${currentUser.id}`, formData);
+            fetchUsers(); // Actualiza la lista de usuarios
+            resetForm();
+            setIsEditing(false);
+            Swal.fire({
+              title: '¡Éxito!',
+              text: 'Usuario actualizado exitosamente.',
+              icon: 'success',
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#3085d6',
+            }).then(() => {
+              Swal.close(); // Cierra la ventana de alerta de confirmación
+              window.location.href = '/usuarios_admin.js'; // Redirige a la lista de usuarios
+            });
+          } catch (error) {
+            console.error('Error updating user:', error);
+            Swal.fire({
+              title: 'Error!',
+              text: 'Error al actualizar el usuario.',
+              icon: 'error',
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#d33',
+            });
+          }
+        } else if (result.isDenied) {
+          Swal.fire({
+            title: 'Cambios no guardados',
+            text: 'Los cambios que has hecho no se guardaron.',
+            icon: 'info',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3085d6', // Cambia el color del botón en el mensaje de "No guardar"
+          }).then(() => {
+            // Aquí puedes realizar una acción adicional si es necesario, como redirigir a otra página
+            Swal.close(); // Cierra la ventana de alerta de confirmación
+            window.location.href = '/usuarios_admin.js'; // Opcional: redirige a la lista de usuarios
+          });
+        }
+      });
     } else {
       // Modo de creación: guarda un nuevo usuario
       try {
         await axios.post('http://localhost:4000/Users', formData);
-        alert('Usuario guardado exitosamente.');
-        window.location.href='/usuarios_admin.js';
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Usuario guardado exitosamente.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#3085d6',
+        }).then(() => {
+          fetchUsers(); // Actualiza la lista de usuarios
+          resetForm(); // Resetea el formulario
+          setIsEditing(false);
+          window.location.href = '/usuarios_admin.js'; // Redirige a la lista de usuarios
+        });
       } catch (error) {
         console.error('Error saving user:', error);
+        Swal.fire({
+          title: 'Error!',
+          text: 'Error al guardar el usuario.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#d33',
+        });
       }
     }
-    fetchUsers(); // Actualiza la lista de usuarios
-    resetForm(); // Resetea el formulario
-    setIsEditing(false);
   };
 
   // Función para editar un usuario
@@ -77,14 +142,38 @@ const UsuariosAdmin = () => {
 
   // Función para eliminar un usuario
   const handleDeleteUser = async (id) => {
-    const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este usuario?');
-    if (confirmDelete) {
+    const confirmDelete = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Eliminar este usuario es una acción irreversible.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    });
+
+    if (confirmDelete.isConfirmed) {
       try {
         await axios.delete(`http://localhost:4000/Users/${id}`);
-        fetchUsers(); // Actualiza la lista de usuarios
-        alert('Usuario eliminado exitosamente.');
+        Swal.fire({
+          title: '¡Eliminado!',
+          text: 'Usuario eliminado exitosamente.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#3085d6',
+        }).then(() => {
+          fetchUsers(); // Actualiza la lista de usuarios
+        });
       } catch (error) {
         console.error('Error deleting user:', error);
+        Swal.fire({
+          title: 'Error!',
+          text: 'Error al eliminar el usuario.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#d33',
+        });
       }
     }
   };
@@ -206,7 +295,7 @@ const UsuariosAdmin = () => {
             </thead>
             <tbody>
               {users.map((user) => (
-                <tr key={user.id}>
+                <tr key={user +1}>
                   <td>{user.id}</td>
                   <td>{user.nombres}</td>
                   <td>{user.apellidos}</td>

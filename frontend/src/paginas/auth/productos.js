@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Header2 from '../../componentes/header2';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const Productos = () => {
   const [formData, setFormData] = useState({
@@ -25,7 +26,12 @@ const Productos = () => {
       const response = await axios.get('http://localhost:4000/Products');
       setProductos(response.data);
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error('Error al obtener los productos. products:', error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Error al obtener los productos.',
+        icon: 'error',
+      });
     }
   };
 
@@ -41,17 +47,28 @@ const Productos = () => {
     });
   };
 
-
   // Función para registrar un nuevo producto
   const handleRegisterProduct = async () => {
     try {
       await axios.post('http://localhost:4000/Products', formData);
       fetchProductos(); // Actualizar la lista de productos
       resetForm();
-      alert('Producto registrado exitosamente.');
-      window.location.href='/productos.js';
+      Swal.fire({
+        title: 'Producto registrado!',
+        text: 'Producto registrado exitosamente.',
+        icon: 'success',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#28a745'
+      }).then(() => {
+        window.location.href = '/productos.js';
+      });
     } catch (error) {
-      console.error('Error registering product:', error);
+      console.error('Error al registrar el producto', error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Error al registrar el producto.',
+        icon: 'error',
+      });
     }
   };
 
@@ -64,30 +81,84 @@ const Productos = () => {
 
   // Función para actualizar un producto
   const handleUpdateProduct = async () => {
-    try {
-      await axios.put(`http://localhost:4000/Products/${currentProduct.id}`, formData);
-      fetchProductos(); // Actualizar la lista de productos
-      resetForm();
-      setIsEditing(false);
-      alert('Producto actualizado exitosamente.');
-      window.location.href='/productos.js';
-    } catch (error) {
-      console.error('Error updating product:', error);
-    }
+    Swal.fire({
+      title: '¿Desea continuar para guardar los cambios?',
+      icon: 'warning',
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      denyButtonText: `No Guardar`,
+      cancelButtonText: 'Cancelar',  // Cambia el texto del botón de cancelar
+      confirmButtonColor: '#3085d6', // Establece el color azul para el botón de guardar
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.put(`http://localhost:4000/Products/${currentProduct.id}`, formData);
+          fetchProductos(); // Actualizar la lista de productos
+          resetForm();
+          setIsEditing(false);
+          Swal.fire({
+            title:'Producto actualizado con exito!',
+            icon:'success'
+          }).then(() => {
+            Swal.close(); // Cierra la ventana de alerta de confirmación
+            window.location.href = '/productos.js';
+          });
+        } catch (error) {
+          console.error('Error updating product:', error);
+          Swal.fire({
+            title: 'Error!',
+            text: 'Error al actualizar el producto.',
+            icon: 'error',
+          });
+        }
+      } else if (result.isDenied) {
+        Swal.fire({
+          title: 'Cambios no guardados',
+          text: 'Los cambios que has hecho no se guardaron.',
+          icon: 'info',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#3085d6', // Cambia el color del botón en el mensaje de "No guardar"
+        }).then(() => {
+          // Aquí puedes realizar una acción adicional si es necesario, como redirigir a otra página
+          window.location.href = '/productos.js'; // Opcional: redirige a la lista de productos
+          Swal.close(); // Cierra la ventana de alerta de confirmación
+        });
+      }
+    });
   };
 
   // Función para eliminar un producto
   const handleDeleteProduct = async (productId) => {
-    const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este producto?');
-    if (confirmDelete) {
-      try {
-        await axios.delete(`http://localhost:4000/Products/${productId}`);
-        fetchProductos(); // Actualizar la lista de productos
-        alert('Producto eliminado exitosamente.');
-      } catch (error) {
-        console.error('Error deleting product:', error);
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminarlo!',
+      cancelButtonText: 'Cancelar',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`http://localhost:4000/Products/${productId}`);
+          fetchProductos(); // Actualizar la lista de productos
+          Swal.fire({
+            title: 'Eliminado!',
+            text: 'Tu producto ha sido eliminado.',
+            icon: 'success',
+          });
+        } catch (error) {
+          console.error('Error deleting product:', error);
+          Swal.fire({
+            title: 'Error!',
+            text: 'Error al eliminar el producto.',
+            icon: 'error',
+          });
+        }
       }
-    }
+    });
   };
 
   // Resetear formulario

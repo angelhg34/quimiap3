@@ -4,6 +4,8 @@ import '../../styles/style_bienvenida.css';
 import Header from "../../componentes/header1";
 import Footer from "../../componentes/footer";
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
+
 
 const Bienvenida = () => {
   const [productos, setProductos] = useState([]);
@@ -29,26 +31,53 @@ const Bienvenida = () => {
 
   // Función para agregar producto al carrito
   const agregarAlCarrito = (producto) => {
-    const carritoGuardado = JSON.parse(localStorage.getItem('carrito')) || [];
-    const productoEnCarrito = carritoGuardado.find(p => p.id === producto.id);
-
-    let nuevoCarrito;
-    if (productoEnCarrito) {
-      nuevoCarrito = carritoGuardado.map(p =>
-        p.id === producto.id ? { ...p, cantidad: p.cantidad + 1 } : p
-      );
-    } else {
-      nuevoCarrito = [...carritoGuardado, { ...producto, cantidad: 1 }];
-    }
-
-    localStorage.setItem('carrito', JSON.stringify(nuevoCarrito));
-    // Actualiza el estado del carrito si lo estás usando en el futuro
-    // setCarrito(nuevoCarrito);
-
-    alert(`${producto.nombre} ha sido agregado al carrito!`);
-    console.log('Carrito después de agregar:', nuevoCarrito);
+    Swal.fire({
+      title: '¿Desea agregar este producto al carrito?',
+      text: `${producto.nombre} será añadido al carrito de compras.`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Agregar al carrito',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3085d6', // Color del botón de confirmar
+      cancelButtonColor: '#d33', // Color del botón de cancelar
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const carritoGuardado = JSON.parse(localStorage.getItem('carrito')) || [];
+        const productoEnCarrito = carritoGuardado.find(p => p.id === producto.id);
+  
+        let nuevoCarrito;
+        if (productoEnCarrito) {
+          nuevoCarrito = carritoGuardado.map(p =>
+            p.id === producto.id ? { ...p, cantidad: p.cantidad + 1 } : p
+          );
+        } else {
+          nuevoCarrito = [...carritoGuardado, { ...producto, cantidad: 1 }];
+        }
+  
+        localStorage.setItem('carrito', JSON.stringify(nuevoCarrito));
+        // Actualiza el estado del carrito si lo estás usando en el futuro
+        // setCarrito(nuevoCarrito);
+  
+        Swal.fire({
+          title: '¡Producto agregado!',
+          text: `${producto.nombre} ha sido agregado al carrito.`,
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#3085d6', // Color del botón de confirmar
+        }).then(() => {
+          console.log('Carrito después de agregar:', nuevoCarrito);
+        });
+      } else {
+        Swal.fire({
+          title: 'Acción cancelada',
+          text: 'El producto no fue agregado al carrito.',
+          icon: 'info',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#3085d6', // Color del botón de confirmar
+        });
+      }
+    });
   };
-
   return (
     <div>
       <Header />

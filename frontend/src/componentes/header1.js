@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import '../styles/header_styles.css';
+import Swal from 'sweetalert2';
 
 const Header = () => {
   const [email, setEmail] = useState("");
@@ -20,10 +21,19 @@ const Header = () => {
       if (storedUserName) {
         setUserName(storedUserName);
       }
+
+      // Alerta de bienvenida
+      Swal.fire({
+        title: '¡Bienvenido!',
+        text: `Hola, ${userName}. ¡Has iniciado sesión exitosamente!`,
+        icon: 'success',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#3085d6', // Color del botón
+      });
     } else {
       setUserName("");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, userName]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -34,11 +44,11 @@ const Header = () => {
           contrasena: password,
         },
       });
-
+  
       const user = response.data.find(
         (u) => u.correo_electronico === email && u.contrasena === password
       );
-
+  
       if (user) {
         sessionStorage.setItem("isAuthenticated", "true");
         sessionStorage.setItem("userRole", user.rol);
@@ -46,7 +56,7 @@ const Header = () => {
         sessionStorage.setItem("userId", user.id); // Guardar el ID del usuario
         setIsAuthenticated(true);
         setUserName(user.nombres);
-
+  
         switch (user.rol.toLowerCase()) {
           case "cliente":
             navigate("/");
@@ -64,20 +74,65 @@ const Header = () => {
             navigate("/");
         }
       } else {
-        alert("Correo o contraseña incorrectos");
+        Swal.fire({
+          title: 'Error de inicio de sesión',
+          text: 'Correo o contraseña incorrectos.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#3085d6', // Color del botón
+        });
       }
     } catch (error) {
       console.error("Error during login:", error);
+      Swal.fire({
+        title: 'Error',
+        text: 'Hubo un problema durante el inicio de sesión. Por favor, intente de nuevo.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#3085d6', // Color del botón
+      });
     }
   };
 
   const handleLogout = () => {
-    sessionStorage.clear();
-    setIsAuthenticated(false);
-    setUserName("");
-    navigate("/");
+    Swal.fire({
+      title: '¿Está seguro de que desea cerrar sesión?',
+      icon: 'warning',
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: 'Cerrar sesión',
+      denyButtonText: `Mantener sesión`,
+      cancelButtonText: 'Cancelar', // Texto del botón de cancelar
+      confirmButtonColor: '#3085d6', // Color azul para el botón de cerrar sesión
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Limpiar el almacenamiento de sesión y redirigir
+        sessionStorage.clear();
+        setIsAuthenticated(false);
+        setUserName("");
+        navigate("/"); // Redirigir a la página de inicio
+        Swal.fire({
+          title: '¡Sesión cerrada!',
+          icon: 'success',
+          text: 'Has cerrado sesión exitosamente.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#3085d6', // Color del botón en la alerta de éxito
+        }).then(() => {
+          Swal.close(); // Cierra la ventana de alerta de éxito
+        });
+      } else if (result.isDenied) {
+        Swal.fire({
+          title: 'Sesión no cerrada',
+          text: 'Tu sesión continúa activa.',
+          icon: 'info',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#3085d6', // Color del botón en el mensaje de "Mantener sesión"
+        }).then(() => {
+          Swal.close(); // Cierra la ventana de alerta de información
+        });
+      }
+    });
   };
-
   return (
     <div>
       <header className="bg-light border-bottom sticky-header">
