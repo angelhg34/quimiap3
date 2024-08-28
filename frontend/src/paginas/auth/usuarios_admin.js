@@ -4,282 +4,246 @@ import axios from 'axios';
 import Header2 from '../../componentes/header2';
 
 const UsuariosAdmin = () => {
-    const [formData, setFormData] = useState({
-        nombres: '',
-        apellidos: '',
-        telefono: '',
-        correo_electronico: '',
-        tipo_doc: '',
-        num_doc: '',
-        contrasena: '',
-        genero: '',
-        rol: ''
-        });
-  
-    const [usuarios, setUsuarios] = useState([]);
-    const [isEditing, setIsEditing] = useState(false);
-    const [currentIndex, setCurrentIndex] = useState(null);
-  
-    useEffect(() => {
-      const fetchUsuarios = async () => {
-        try {
-          const response = await axios.get("http://localhost:4000/Users");
-          setUsuarios(response.data);
-        } catch (error) {
-          alert("Error al cargar los usuarios:", error);
-        }
-      };
-  
-      fetchUsuarios();
-    }, []);
-  
-    useEffect(() => {
-      const registerButton = document.querySelector('.register-button');
-      const handleClick = () => {
-        document.getElementById('formContainer').style.display = 'block';
-        document.querySelectorAll('.navbar, .user-table, h1, .register-button').forEach(function(element) {
-          element.classList.add('blur-background');
-        });
-      };
-  
-      registerButton.addEventListener('click', handleClick);
-  
-      return () => {
-        registerButton.removeEventListener('click', handleClick);
-      };
-    }, []);
-  
-    const handleChange = (event) => {
-      const { name, value } = event.target;
-      setFormData(prevFormData => ({
-        ...prevFormData,
-        [name]: value
-      }));
-    };
-  
-    const closeForm = () => {
-      document.getElementById('formContainer').style.display = 'none';
-      document.querySelectorAll('.navbar, .user-table, h1, .register-button').forEach(function(element) {
-        element.classList.remove('blur-background');
-      });
-    };
-  
-    const enviar = async (event) => {
-      event.preventDefault();
-      if (isEditing) {
-        try {
-          await axios.put(`http://localhost:4000/Users/${formData.Ref}`, formData);
-          const updatedUsuarios = usuarios.map((usuario, index) =>
-            index === currentIndex ? formData : usuario
-          );
-          setUsuarios(updatedUsuarios);
-          alert("Usuario actualizado con éxito");
-          closeForm(); // Cerrar el formulario después de la edición
-        } catch (error) {
-          console.error(error);
-          alert("Error al actualizar el usuario:", error.message || error.toString());
-        }
-      } else {
-        try {
-          const response = await axios.post("http://localhost:4000/Users", formData);
-          setUsuarios(prevUsuarios => [...prevUsuarios, response.data]);
-          alert("Usuario agregado con éxito");
-          closeForm(); // Cerrar el formulario después de agregar
-        } catch (error) {
-          console.error(error);
-          alert("Error al agregar el usuario:", error.message || error.toString());
-        }
-      }
-      
-      setFormData({
-        nombres: '',
-        apellidos: '',
-        telefono: '',
-        correo_electronico: '',
-        tipo_doc: '',
-        num_doc: '',
-        contrasena: '',
-        genero: '',
-        rol: ''
-      });
-    };
-  
-    const editarUsuario = (index) => {
-      setFormData(usuarios[index]);
-      setIsEditing(true);
-      setCurrentIndex(index);
-      document.getElementById('formContainer').style.display = 'block';
-      document.querySelectorAll('.navbar, .user-table, h1, .register-button').forEach(function(element) {
-        element.classList.add('blur-background');
-      });
-    };
-    const eliminarUsuario = async (index) => {
+  const [formData, setFormData] = useState({
+    nombres: '',
+    apellidos: '',
+    telefono: '',
+    correo_electronico: '',
+    tipo_doc: '',
+    num_doc: '',
+    contrasena: '',
+    genero: '',
+    rol: ''
+  });
+
+  const [users, setUsers] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // Función para obtener usuarios de la API
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:4000/Users');
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  // Manejar cambio en los campos de formulario
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  // Función para guardar un nuevo usuario o editar uno existente
+  const handleSaveUser = async () => {
+    if (isEditing && currentUser) {
+      // Modo de edición: actualiza el usuario existente
       try {
-        const usuario = usuarios[index];
-        console.log(`Eliminando usuario con Ref: ${usuario.Ref}`);
-        await axios.delete(`http://localhost:4000/Users/${usuario.Ref}`);
-        
-        const updatedUsuarios = usuarios.filter((_, i) => i !== index);
-        setUsuarios(updatedUsuarios);
-        
-        alert("Usuario eliminado con éxito");
+        await axios.put(`http://localhost:4000/Users/${currentUser.id}`, formData);
+        alert('Usuario actualizado exitosamente.');
+        window.location.href='/usuarios_admin.js';
       } catch (error) {
-        console.error(error.response || error.message);
-        alert("Error al eliminar el usuario:", error.message || error.toString());
+        console.error('Error updating user:', error);
       }
-    };
-  
-    return (
-      <div>
-        <Header2 />
-        <h1>Gestion De Usuarios Administrativos</h1>
-        <button className="register-button">Registrar Usuario</button>
-        <table className="user-table">
-          <thead>
-            <tr>
-              <th>Ref #</th>
-              <th>Tipo de Documento</th>
-              <th>N° Identificacion</th>
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>Correo Electronico</th>
-              <th>Genero</th>
-              <th>Celular</th>
-              <th>Contraseña</th>
-              <th>Rol</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {usuarios.map((usuario, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{usuario.tipo_doc}</td>
-                <td>{usuario.num_doc}</td>
-                <td>{usuario.nombres}</td>
-                <td>{usuario.apellidos}</td>
-                <td>{usuario.correo_electronico}</td>
-                <td>{usuario.genero}</td>
-                <td>{usuario.telefono}</td>
-                <td>{usuario.contrasena}</td>
-                <td>{usuario.rol}</td>
-                <td>
-                  <button className="edit-button" onClick={() => editarUsuario(index)}>🖋️</button>
-                  <button className="delete-button" onClick={() => eliminarUsuario(index)}>🗑️</button>
-                </td>
+    } else {
+      // Modo de creación: guarda un nuevo usuario
+      try {
+        await axios.post('http://localhost:4000/Users', formData);
+        alert('Usuario guardado exitosamente.');
+        window.location.href='/usuarios_admin.js';
+      } catch (error) {
+        console.error('Error saving user:', error);
+      }
+    }
+    fetchUsers(); // Actualiza la lista de usuarios
+    resetForm(); // Resetea el formulario
+    setIsEditing(false);
+  };
+
+  // Función para editar un usuario
+  const handleEditUser = (user) => {
+    setIsEditing(true);
+    setCurrentUser(user);
+    setFormData(user);
+  };
+
+  // Función para eliminar un usuario
+  const handleDeleteUser = async (id) => {
+    const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este usuario?');
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:4000/Users/${id}`);
+        fetchUsers(); // Actualiza la lista de usuarios
+        alert('Usuario eliminado exitosamente.');
+      } catch (error) {
+        console.error('Error deleting user:', error);
+      }
+    }
+  };
+
+  // Resetear formulario
+  const resetForm = () => {
+    setFormData({
+      nombres: '',
+      apellidos: '',
+      telefono: '',
+      correo_electronico: '',
+      tipo_doc: '',
+      num_doc: '',
+      contrasena: '',
+      genero: '',
+      rol: ''
+    });
+    setCurrentUser(null);
+  };
+
+  return (
+    <div>
+      <Header2 />
+      <div className="container">
+        <section className="container mt-5">
+          <h2>Registro de usuarios administrativos</h2>
+          <br />
+          {/* Botón para abrir el modal */}
+          <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#registroUserModal">
+            Registrar Usuario
+          </button>
+          {/* Modal */}
+          <div className="modal fade" id="registroUserModal" tabIndex={-1} aria-labelledby="registroUserModalLabel" aria-hidden="true">
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="registroUserModalLabel">Registrar Usuario</h5>
+                  <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                </div>
+                <div className="modal-body">
+                  <form>
+                    {/* Formulario de registro */}
+                    <div className="mb-3">
+                      <label htmlFor="tipo_doc" className="form-label">Tipo de Documento</label>
+                      <select className="form-select" id="tipo_doc" value={formData.tipo_doc} onChange={handleInputChange} required>
+                        <option value="ti">Tarjeta de identidad</option>
+                        <option value="cc">Cédula de ciudadanía</option>
+                        <option value="ce">Cédula de extranjería</option>
+                      </select>
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="num_doc" className="form-label">Nº Identificación</label>
+                      <input type="text" className="form-control" id="num_doc" placeholder="Ingrese Nº Identificación" value={formData.num_doc} onChange={handleInputChange} />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="nombres" className="form-label">Nombres</label>
+                      <input type="text" className="form-control" id="nombres" placeholder="Ingrese Nombres" value={formData.nombres} onChange={handleInputChange} />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="apellidos" className="form-label">Apellidos</label>
+                      <input type="text" className="form-control" id="apellidos" placeholder="Ingrese Apellidos" value={formData.apellidos} onChange={handleInputChange} />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="correo_electronico" className="form-label">Correo Electrónico</label>
+                      <input type="email" className="form-control" id="correo_electronico" placeholder="Ingrese Correo Electrónico" value={formData.correo_electronico} onChange={handleInputChange} />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="genero" className="form-label">Género</label>
+                      <select className="form-select" id="genero" value={formData.genero} onChange={handleInputChange} required>
+                        <option value="femenino">Femenino</option>
+                        <option value="masculino">Masculino</option>
+                        <option value="otro">Otro</option>
+                      </select>
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="telefono" className="form-label">Número Celular</label>
+                      <input type="text" className="form-control" id="telefono" placeholder="Ingrese Número Celular" value={formData.telefono} onChange={handleInputChange} />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="contrasena" className="form-label">Contraseña</label>
+                      <input type="text" className="form-control" id="contrasena" placeholder="Ingrese Contraseña" value={formData.contrasena} onChange={handleInputChange} />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="rol" className="form-label">Rol</label>
+                      <select className="form-select" id="rol" value={formData.rol} onChange={handleInputChange} required>
+                        <option value="domiciliario">Domiciliario</option>
+                        <option value="jf_produccion">Jefe de Producción</option>
+                        <option value="gerente">Gerente</option>
+                        <option value="administrador">Administrador</option>
+                      </select>
+                    </div>
+                  </form>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={resetForm}>Cerrar</button>
+                  <button type="button" className="btn btn-success" onClick={handleSaveUser}>
+                    {isEditing ? 'Guardar Cambios' : 'Guardar'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Tabla de usuarios */}
+          <table className="table table-striped mt-4">
+            <thead>
+              <tr>
+                <th>ID Usuario</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Correo Electrónico</th>
+                <th>Teléfono</th>
+                <th>Género</th>
+                <th>Tipo de Documento</th>
+                <th>Nº Identificación</th>
+                <th>Rol</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="form-container" id="formContainer">
-          <button className="close-btn" onClick={closeForm}>×</button>
-          <form className="user-form" id="userForm" onSubmit={enviar}>
-            <label htmlFor="tipo_doc">Tipo De Documento</label>
-            <select 
-              id="tipo_doc"
-              name="tipo_doc"
-              value={formData.tipo_doc}
-              onChange={handleChange}
-              required
-            >
-              <option value="" disabled>Seleccione una opcion</option>
-              <option value="Tarjeta de identidad">Tarjeta de identidad</option>
-              <option value="Cedula de Ciudadania">Cedula de Ciudadania</option>
-              <option value="Cedula de extranjeria">Cedula de extranjeria</option>
-            </select>
-  
-            <label htmlFor="num_doc">N° Identificacion</label>
-            <input 
-              type="number" 
-              value={formData.num_doc} 
-              onChange={handleChange}
-              id="num_doc" 
-              name="num_doc" 
-              required 
-            />
-  
-            <label htmlFor="nombres">Nombre</label>
-            <input 
-              type="text"
-              value={formData.nombres}
-              onChange={handleChange}
-              id="nombres" 
-              name="nombres" 
-              required 
-            />
-  
-            <label htmlFor="apellidos">Apellido</label>
-            <input 
-              type="text" 
-              id="apellidos" 
-              name="apellidos"
-              value={formData.apellidos}
-              onChange={handleChange}
-              required 
-            />
-  
-            <label htmlFor="correo_electronico">Correo Electronico</label>
-            <input 
-              type="email" 
-              value={formData.correo_electronico}
-              onChange={handleChange}
-              id="correo_electronico" 
-              name="correo_electronico" 
-              required 
-            />
-  
-            <label htmlFor="genero">Genero</label>
-            <select 
-              id="genero"
-              name="genero"
-              value={formData.genero}
-              onChange={handleChange}
-              required
-            >
-              <option value="" disabled>Seleccione una opcion</option>
-              <option value="Femenino">Femenino</option>
-              <option value="Masculino">Masculino</option>
-            </select>
-  
-            <label htmlFor="celular">Celular</label>
-            <input 
-              type="number" 
-              value={formData.telefono}
-              onChange={handleChange}
-              id="telefono" 
-              name="telefono" 
-              required 
-            />
-  
-            <label htmlFor="contrasena">Contraseña</label>
-            <input 
-              type="password"
-              value={formData.contrasena}
-              onChange={handleChange}
-              id="contrasena" 
-              name="contrasena" 
-              required 
-            />
-  
-            <label htmlFor="rol">Rol</label>
-            <select 
-              id="rol"
-              name="rol"
-              value={formData.rol}
-              onChange={handleChange}
-              required
-            >
-              <option value="" disabled>Seleccione una opcion</option>
-              <option value="Gerente">Gerente</option>
-              <option value="jefe de producción">jefe de producción</option>
-              <option value="Domiciliario">Domiciliario</option>
-            </select>
-            <button type="submit">{isEditing ? 'Actualizar' : 'Agregar'}</button>
-          </form>
-        </div>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.id}>
+                  <td>{user.id}</td>
+                  <td>{user.nombres}</td>
+                  <td>{user.apellidos}</td>
+                  <td>{user.correo_electronico}</td>
+                  <td>{user.telefono}</td>
+                  <td>{user.genero}</td>
+                  <td>{user.tipo_doc}</td>
+                  <td>{user.num_doc}</td>
+                  <td>{user.rol}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className="btn btn-warning btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#registroUserModal"
+                      onClick={() => handleEditUser(user)}
+                    >
+                      Editar
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      className="btn btn-danger btn-sm"
+                      onClick={() => handleDeleteUser(user.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
       </div>
-    );
-  }
-  
-  export default UsuariosAdmin;
-  
+    </div>
+  );
+};
+
+export default UsuariosAdmin;

@@ -1,112 +1,28 @@
 {
   "Users": [
     {
-      "id": "1",
-      "nombres": "dairon smith",
-      "apellidos": "chapid moreno",
-      "telefono": "3224537890",
-      "correo_electronico": "morenodairon80@gmail.com",
-      "tipo_doc": "CC",
-      "num_doc": "10196055503",
-      "contrasena": "morenodairon78",
-      "genero": "Mujer",
-      "rol": "Cliente"
+      "id": "5a86",
+      "nombres": "Dairon Smith123",
+      "apellidos": "Chapid Moreno",
+      "telefono": "3202937619",
+      "correo_electronico": "dairon12@12",
+      "tipo_doc": "cc",
+      "num_doc": "1081399564",
+      "contrasena": "123",
+      "genero": "masculino",
+      "rol": "gerente"
     },
     {
-      "id": "2",
-      "nombres": "laura",
-      "apellidos": "albararcin",
-      "telefono": "32452727",
-      "correo_electronico": "lauraA@gmail.om",
-      "tipo_doc": "Cedula de Ciudadania",
-      "num_doc": "10985456",
-      "contrasena": "jahajmaavnhaah",
-      "genero": "Femenino",
-      "rol": "jefe de producción"
-    },
-    {
-      "id": "429b",
-      "nombres": "Jerson",
-      "apellidos": "Muñoz",
-      "telefono": "312654653325",
-      "correo_electronico": "J.erson@gmail.com",
-      "tipo_doc": "Pasaporte",
-      "num_doc": "1234567098",
-      "contrasena": "jerson1234",
-      "genero": "Femenino",
-      "rol": "Cliente"
-    },
-    {
-      "id": "394b",
-      "nombres": "darwin",
-      "apellidos": "Lesmes",
-      "telefono": "3232645462652",
-      "correo_electronico": "d@gmail.com",
-      "tipo_doc": "Cedula de extranjeria",
-      "num_doc": "12345675274",
-      "contrasena": "wino13345",
-      "genero": "Masculino",
-      "rol": "Domiciliario"
-    },
-    {
-      "id": "7b93",
-      "nombres": "valeria",
-      "apellidos": "perez",
-      "telefono": "326266262",
-      "correo_electronico": "v@gmail.com",
-      "tipo_doc": "Cedula de extranjeria",
-      "num_doc": "216166",
-      "contrasena": "valeria12345",
-      "genero": "Femenino",
-      "rol": "jefe de produccion"
-    },
-    {
-      "id": "8ea5",
-      "nombres": "Nancy",
-      "apellidos": "Neira",
-      "telefono": "3208556747",
-      "correo_electronico": "nancy@gmail.com",
-      "tipo_doc": "Tarjeta de identidad",
-      "num_doc": "10319758478",
-      "contrasena": "nancykh473563",
-      "genero": "Femenino",
-      "rol": "Cliente"
-    },
-    {
-      "id": "9526",
-      "nombres": "omar",
-      "apellidos": "perez",
-      "telefono": "3115673262",
-      "correo_electronico": "o@gmail.com",
-      "tipo_doc": "Cedula de extranjeria",
-      "num_doc": "123409923",
-      "contrasena": "omar62762",
-      "genero": "Masculino",
-      "rol": "Domiciliario"
-    },
-    {
-      "id": "aeaa",
-      "nombres": "Andres",
-      "apellidos": "Lopez",
-      "telefono": "3139000900",
-      "correo_electronico": "andr@gmail.com",
-      "tipo_doc": "Pasaporte",
-      "num_doc": "1200003093",
-      "contrasena": "andres12233094093",
-      "genero": "Masculino",
-      "rol": "Cliente"
-    },
-    {
-      "id": "e254",
-      "nombres": "Carlos",
-      "apellidos": "Neira",
-      "telefono": "3187837327",
-      "correo_electronico": "carlos@gmail.com",
-      "tipo_doc": "Cedula de extranjeria",
-      "num_doc": "01909292039",
-      "contrasena": "carlos1234",
-      "genero": "Masculino",
-      "rol": "Gerente"
+      "id": "c554",
+      "nombres": "31312",
+      "apellidos": "13131",
+      "telefono": "423432",
+      "correo_electronico": "312312@",
+      "tipo_doc": "cc",
+      "num_doc": "31231",
+      "contrasena": "fdfsd",
+      "genero": "masculino",
+      "rol": "jf_produccion"
     }
   ],
   "Products": [
@@ -199,6 +115,17 @@
       "usos": "kknknkn",
       "advertencias": "knknknk",
       "precio_unitario": "18000"
+    },
+    {
+      "id": "",
+      "nombre": "",
+      "descripcion": "",
+      "categoria": "",
+      "composicion": "",
+      "contenido_neto": "",
+      "usos": "",
+      "advertencias": "",
+      "precio_unitario": ""
     }
   ]
 }
